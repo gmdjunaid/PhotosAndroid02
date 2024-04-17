@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class AlbumsView extends AppCompatActivity {
     ArrayList<Album> albums = new ArrayList<>();
     ArrayAdapter<Album> adapter;
     ListView listView;
+    ImageButton searchButton;
 
     private int longPressedItemPosition;
     FloatingActionButton fab;
@@ -34,6 +36,7 @@ public class AlbumsView extends AppCompatActivity {
         setContentView(R.layout.album_list);
         fab = findViewById(R.id.addAlbumBtn);
         listView = (ListView) findViewById(R.id.album_list_view);
+        searchButton = findViewById(R.id.search_button);
         adapter = new ArrayAdapter<Album>(this, R.layout.activity_albumview, R.id.album, albums);
         listView.setAdapter(adapter);
 
@@ -50,6 +53,13 @@ public class AlbumsView extends AppCompatActivity {
                 registerForContextMenu(listView);
                 longPressedItemPosition = position;
                 return false;
+            }
+        });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(AlbumsView.this, "Clicked Search", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -158,6 +168,6 @@ public class AlbumsView extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         listView.setSelection(adapter.getCount() - 1);
 
-        Toast.makeText(AlbumsView.this, "New album added: " + album.getAlbumName(), Toast.LENGTH_LONG).show();
+        Toast.makeText(AlbumsView.this, "New album added: " + album.getAlbumName() + ". To rename or delete the album, simple long press it.", Toast.LENGTH_LONG).show();
     }
 }
