@@ -168,6 +168,6 @@ public class AlbumsView extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         listView.setSelection(adapter.getCount() - 1);
 
-        Toast.makeText(AlbumsView.this, "New album added: " + album.getAlbumName(), Toast.LENGTH_LONG).show();
+        Toast.makeText(AlbumsView.this, "New album added: " + album.getAlbumName() + ". To rename or delete the album, simple long press it.", Toast.LENGTH_LONG).show();
     }
 }
