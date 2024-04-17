@@ -15,13 +15,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.photosandroid02.models.Album;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 public class AlbumsView extends AppCompatActivity {
-    ArrayList<String> albums = new ArrayList<>();
-    ArrayAdapter<String> adapter;
+    ArrayList<Album> albums = new ArrayList<>();
+    ArrayAdapter<Album> adapter;
     ListView listView;
 
     private int longPressedItemPosition;
@@ -33,7 +34,7 @@ public class AlbumsView extends AppCompatActivity {
         setContentView(R.layout.album_list);
         fab = findViewById(R.id.addAlbumBtn);
         listView = (ListView) findViewById(R.id.album_list_view);
-        adapter = new ArrayAdapter<String>(this, R.layout.activity_albumview, R.id.album, albums);
+        adapter = new ArrayAdapter<Album>(this, R.layout.activity_albumview, R.id.album, albums);
         listView.setAdapter(adapter);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +113,7 @@ public class AlbumsView extends AppCompatActivity {
     private void renameAlbum() {
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setText(albums.get(longPressedItemPosition));
+        input.setText(albums.get(longPressedItemPosition).getAlbumName());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Rename Album");
@@ -122,8 +123,9 @@ public class AlbumsView extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String newAlbumName = input.getText().toString();
+                Album album = new Album(newAlbumName);
                 if (!newAlbumName.isEmpty()) {
-                    albums.set(longPressedItemPosition, newAlbumName);
+                    albums.set(longPressedItemPosition, album);
                     adapter.notifyDataSetChanged();
                     Toast.makeText(AlbumsView.this, "Album renamed", Toast.LENGTH_SHORT).show();
                 } else {
@@ -151,10 +153,11 @@ public class AlbumsView extends AppCompatActivity {
 
     // Handles Adding an album.
     private void addAlbum(String newAlbum) {
-        albums.add(newAlbum);
+        Album album = new Album(newAlbum);
+        albums.add(album);
         adapter.notifyDataSetChanged();
         listView.setSelection(adapter.getCount() - 1);
 
-        Toast.makeText(AlbumsView.this, "New album added: " + newAlbum, Toast.LENGTH_LONG).show();
+        Toast.makeText(AlbumsView.this, "New album added: " + album.getAlbumName(), Toast.LENGTH_LONG).show();
     }
 }

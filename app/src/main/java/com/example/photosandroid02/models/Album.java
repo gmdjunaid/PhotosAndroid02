@@ -1,5 +1,7 @@
 package com.example.photosandroid02.models;
 
+import androidx.annotation.NonNull;
+
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,6 +45,11 @@ public class Album implements Serializable {
      * @return Album name
      */
     public String getAlbumName() {
+        return albumName;
+    }
+
+    @Override
+    public String toString() {
         return albumName;
     }
 
