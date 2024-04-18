@@ -14,108 +14,121 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.example.photosandroid02.models.Photo;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class PhotoView extends AppCompatActivity {
+    private static final int REQUEST_GET_PHOTO = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
 
+    private RecyclerView photosRecyclerView;
+    private PhotoAdapter photosAdapter;
+    private List<Photo> photosList;
+    private ImageView selectedPhotoImageView;
 
+    private FloatingActionButton addPhotoBtn;
+    private Photo selectedPhoto;
 
-        private static final int REQUEST_GET_PHOTO = 1;
-        private static final int REQUEST_IMAGE_CAPTURE = 2;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_photos_view);
 
-        private RecyclerView photosRecyclerView;
-        private PhotoAdapter photosAdapter;
-        private List<Photo> photosList;
-        private ImageView selectedPhotoImageView;
-        private Photo selectedPhoto;
+        photosList = new ArrayList<>();
+        selectedPhotoImageView = findViewById(R.id.selectedPhotoImageView);
+        photosRecyclerView = findViewById(R.id.photosRecyclerView);
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_photos_veiw);
+        setupRecyclerView();
 
-            photosList = new ArrayList<>();
-            selectedPhotoImageView = findViewById(R.id.selectedPhotoImageView);
-            photosRecyclerView = findViewById(R.id.photosRecyclerView);
-
-            setupRecyclerView();
-        }
-
-        private void setupRecyclerView() {
-            photosRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-            photosAdapter = new PhotoAdapter(this, photosList);
-            photosRecyclerView.setAdapter(photosAdapter);
-        }
-
-        public void addPhoto(View view) {
-            // Intent to open the document picker
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.setType("image/*");
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            startActivityForResult(intent, REQUEST_GET_PHOTO);
-        }
-
-        public void deletePhoto(View view) {
-            // Assuming there is a method to get the selected photo from the adapter
-            if (selectedPhoto != null) {
-                photosList.remove(selectedPhoto);
-                photosAdapter.notifyDataSetChanged();
-                selectedPhotoImageView.setImageDrawable(null); // Clear the preview
-                Toast.makeText(this, "Photo deleted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "No photo selected", Toast.LENGTH_SHORT).show();
+        addPhotoBtn = findViewById(R.id.addPhotoBtn);
+        addPhotoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addPhoto();
             }
+        });
+    }
+
+    private void setupRecyclerView() {
+        photosRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        photosAdapter = new PhotoAdapter(this, photosList);
+        photosRecyclerView.setAdapter(photosAdapter);
+    }
+
+    /*public void addPhoto(View view) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("image/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, REQUEST_GET_PHOTO);
+    }*/
+    private void addPhoto() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("image/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, REQUEST_GET_PHOTO);
+    }
+
+    public void deletePhoto(View view) {
+        // Assuming there is a method to get the selected photo from the adapter
+        if (selectedPhoto != null) {
+            photosList.remove(selectedPhoto);
+            photosAdapter.notifyDataSetChanged();
+            selectedPhotoImageView.setImageDrawable(null); // Clear the preview
+            Toast.makeText(this, "Photo deleted", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No photo selected", Toast.LENGTH_SHORT).show();
         }
+    }
 
-        public void captionPhoto(View view) {
-            if (selectedPhoto != null) {
-                final EditText input = new EditText(this);
-                input.setText(selectedPhoto.getCaption());
+    public void captionPhoto(View view) {
+        if (selectedPhoto != null) {
+            final EditText input = new EditText(this);
+            input.setText(selectedPhoto.getCaption());
 
-                new AlertDialog.Builder(this)
-                        .setTitle("Caption Photo")
-                        .setView(input)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                selectedPhoto.setCaption(input.getText().toString());
-                                photosAdapter.notifyDataSetChanged(); // Update the view
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                // Do nothing.
-                            }
-                        })
-                        .show();
-            } else {
-                Toast.makeText(this, "No photo selected", Toast.LENGTH_SHORT).show();
-            }
+            new AlertDialog.Builder(this)
+                    .setTitle("Caption Photo")
+                    .setView(input)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            selectedPhoto.setCaption(input.getText().toString());
+                            photosAdapter.notifyDataSetChanged(); // Update the view
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // Do nothing.
+                        }
+                    })
+                    .show();
+        } else {
+            Toast.makeText(this, "No photo selected", Toast.LENGTH_SHORT).show();
         }
+    }
 
-        // Implement other methods based on your requirements and logic
+    // Implement other methods based on your requirements and logic
 
-        @Override
-        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == REQUEST_GET_PHOTO && resultCode == RESULT_OK) {
-                if (data != null) {
-                    Uri photoUri = data.getData();
-                    if (photoUri != null) {
-                        // Persist permission across reboots.
-                        getContentResolver().takePersistableUriPermission(
-                                photoUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_GET_PHOTO && resultCode == RESULT_OK) {
+            if (data != null) {
+                Uri photoUri = data.getData();
+                if (photoUri != null) {
+                    // Persist permission across reboots.
+                    getContentResolver().takePersistableUriPermission(
+                            photoUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                        // Add the new photo to the list and notify the adapter.
-                        Photo newPhoto = new Photo(photoUri);
-                        photosList.add(newPhoto);
-                        photosAdapter.notifyDataSetChanged();
-                    }
+                    // Add the new photo to the list and notify the adapter.
+                    Photo newPhoto = new Photo(photoUri);
+                    photosList.add(newPhoto);
+                    photosAdapter.notifyDataSetChanged();
                 }
             }
         }
+    }
 
 }
