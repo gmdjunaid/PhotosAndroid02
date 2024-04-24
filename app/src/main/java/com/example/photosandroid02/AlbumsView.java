@@ -36,6 +36,8 @@ public class AlbumsView extends AppCompatActivity {
     ListView listView;
     ImageButton searchButton;
 
+    public static Album currentAlbum;
+
     private int longPressedItemPosition;
     FloatingActionButton fab;
 
@@ -74,6 +76,7 @@ public class AlbumsView extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Get the selected item from the adapter
                 Album selectedAlbum = (Album) parent.getItemAtPosition(position);
+                currentAlbum = selectedAlbum;
 
                 // Launch a new activity with details about the selected album
                 Intent intent = new Intent(AlbumsView.this, PhotoView.class);

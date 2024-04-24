@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="4dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="1dp">
 
     <ImageView
         android:id="@+id/photoImageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerCrop" />
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="1"
+        tools:ignore="MissingConstraints" />
 
-    <com.example.photosandroid02.views.PhotoViewText
-        android:id="@+id/photoCaptionView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Caption here"
-        android:textSize="12sp"
-        android:layout_marginTop="4dp"/>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

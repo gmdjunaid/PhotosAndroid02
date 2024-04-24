@@ -1,5 +1,6 @@
 package com.example.photosandroid02;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,8 +11,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.photosandroid02.models.Photo;
@@ -19,6 +23,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.photosandroid02.AlbumsView.currentAlbum;
 
 
 public class PhotoView extends AppCompatActivity {
@@ -28,6 +34,7 @@ public class PhotoView extends AppCompatActivity {
     private RecyclerView photosRecyclerView;
     private PhotoAdapter photosAdapter;
     private List<Photo> photosList;
+
     private ImageView selectedPhotoImageView;
 
     private FloatingActionButton addPhotoBtn;
@@ -38,11 +45,21 @@ public class PhotoView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photos_view);
 
-        photosList = new ArrayList<>();
-        selectedPhotoImageView = findViewById(R.id.selectedPhotoImageView);
+        photosList = currentAlbum.getPhotos();
         photosRecyclerView = findViewById(R.id.photosRecyclerView);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        setupRecyclerView();
+        //setupRecyclerView();
+        photosAdapter = new PhotoAdapter(this, photosList);
+        photosRecyclerView.setLayoutManager(new GridLayoutManager(PhotoView.this, 4));
+        photosRecyclerView.setAdapter(photosAdapter);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        setToolbarTitle(currentAlbum.getAlbumName());
 
         addPhotoBtn = findViewById(R.id.addPhotoBtn);
         addPhotoBtn.setOnClickListener(new View.OnClickListener() {
@@ -53,18 +70,6 @@ public class PhotoView extends AppCompatActivity {
         });
     }
 
-    private void setupRecyclerView() {
-        photosRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        photosAdapter = new PhotoAdapter(this, photosList);
-        photosRecyclerView.setAdapter(photosAdapter);
-    }
-
-    /*public void addPhoto(View view) {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("image/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, REQUEST_GET_PHOTO);
-    }*/
     private void addPhoto() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("image/*");
@@ -131,4 +136,16 @@ public class PhotoView extends AppCompatActivity {
         }
     }
 
+    private void setToolbarTitle(String title) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }

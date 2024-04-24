@@ -26,6 +26,11 @@
         </activity>
         <activity android:name=".PhotoView"/>
         <activity android:name=".PhotoViewText"/>
+        <activity
+            android:name=".FullScreenPhotoActivity"
+            android:label="Full Screen Photo Activity">
+        </activity>
+
 
     </application>
 

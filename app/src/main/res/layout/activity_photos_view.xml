@@ -6,27 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/photos_toolbar" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/photosRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/selectedPhotoImageView"/>
+        android:layout_below="@id/toolbar"
+        android:scrollbarStyle="outsideInset"
+        android:scrollbars="vertical"
+        android:layout_margin="5dp" />
 
-    <ImageView
-        android:id="@+id/selectedPhotoImageView"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentBottom="true"
-        android:contentDescription="selected_photo"
-        android:scaleType="centerInside"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addPhotoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="32dp"
+        android:layout_margin="16dp"
         android:src="@drawable/baseline_add_24"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
+
