@@ -1,5 +1,7 @@
 package com.example.photosandroid02.models;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import java.io.*;
@@ -18,6 +20,7 @@ public class Album implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+
     /**
      * The album name String to use.
      */
@@ -26,7 +29,7 @@ public class Album implements Serializable {
     /**
      * The list of photos to use.
      */
-    // private List<Photo> photos = new ArrayList<>();
+    private transient List<Photo> photos = new ArrayList<>();
 
     /**
      * Creates an album object.
@@ -36,7 +39,7 @@ public class Album implements Serializable {
     public Album(String albumName) {
         this.albumName = albumName;
         // this.user = user;
-        // this.photos = new ArrayList<>(photos);
+        this.photos = new ArrayList<>(photos);
     }
 
     /**
@@ -94,9 +97,9 @@ public class Album implements Serializable {
      *
      * @return ArrayList containing the photo objects.
      */
-    /*public List<Photo> getPhotos() {
+    public List<Photo> getPhotos() {
         return photos;
-    }*/
+    }
 
     /**
      * Set the photos inside an album to a new list.
@@ -145,5 +148,28 @@ public class Album implements Serializable {
         }
         return null;
     }*/
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject(); // Serialize non-transient fields
+
+        // Serialize photos as a list of their URIs
+        List<String> photoUris = new ArrayList<>();
+        for (Photo photo : photos) {
+            photoUris.add(photo.getImageUri().toString());
+        }
+        out.writeObject(photoUris);
+    }
+
+    // Custom deserialization method
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject(); // Deserialize non-transient fields
+
+        // Deserialize photo URIs and recreate photos list
+        List<String> photoUris = (List<String>) in.readObject();
+        photos = new ArrayList<>();
+        for (String uriString : photoUris) {
+            photos.add(new Photo(Uri.parse(uriString)));
+        }
+    }
 }
 

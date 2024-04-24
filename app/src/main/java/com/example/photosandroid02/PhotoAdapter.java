@@ -1,10 +1,12 @@
 package com.example.photosandroid02;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
@@ -16,7 +18,7 @@ import java.util.List;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
 
     private final List<Photo> photos;
-    private final LayoutInflater inflater;
+    private LayoutInflater inflater;
     private final Context context;
 
     public PhotoAdapter(Context context, List<Photo> photos) {
@@ -28,23 +30,48 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ImageView imageView = new ImageView(context);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        inflater = LayoutInflater.from(parent.getContext());
+        //ImageView imageView = new ImageView(context);
+        //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        View view = inflater.inflate(R.layout.photo_item, parent, false);
         // Set layout parameters as needed
-        return new ViewHolder(imageView);
+        return new ViewHolder(view);
     }
 
+    private int selectedPos = RecyclerView.NO_POSITION;
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Photo photo = photos.get(position);
-        try {
-            // Load the image from the imageUri using MediaStore
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photo.getImageUri());
-            holder.imageView.setImageBitmap(bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle error
-        }
+        holder.imageView.setImageURI(photo.getImageUri());
+        holder.itemView.setSelected(selectedPos == position);
+
+        // Handle click event
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((PhotoView) context).isDeleteMode) {
+                    // In delete mode, select the photo and show deletion option
+                    selectedPos = position;
+                    notifyDataSetChanged();  // Highlight the selected item
+                    ((PhotoView) context).selectedPhoto = photo;  // Update the selected photo
+                    if(context instanceof PhotoView) {
+                        ((PhotoView) context).deletePhoto(photo);
+                    }
+                } else {
+                    // Normal mode, open photo view or perform other actions
+                    // Open full-screen photo activity
+                    Intent intent = new Intent(context, FullScreenPhotoActivity.class);
+                    intent.putExtra("photoUri", photo.getImageUri().toString());
+                    context.startActivity(intent);
+                }
+                // Open full-screen photo activity
+                /*Intent intent = new Intent(context, FullScreenPhotoActivity.class);
+                intent.putExtra("photoUri", photo.getImageUri().toString());
+                context.startActivity(intent);*/
+
+            }
+        });
+
     }
 
     @Override
@@ -55,9 +82,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
 
-        public ViewHolder(@NonNull ImageView itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView;
+            imageView = itemView.findViewById(R.id.photoImageView);
         }
     }
 }
