@@ -45,7 +45,9 @@ public class PhotoView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photos_view);
 
-        photosList = currentAlbum.getPhotos();
+        if (currentAlbum != null) {
+            photosList = currentAlbum.getPhotos();
+        }
         photosRecyclerView = findViewById(R.id.photosRecyclerView);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

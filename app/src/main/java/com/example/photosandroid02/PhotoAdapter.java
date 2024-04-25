@@ -21,6 +21,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     private LayoutInflater inflater;
     private final Context context;
 
+    public static Photo currentPhoto;
     public PhotoAdapter(Context context, List<Photo> photos) {
         this.photos = photos;
         this.inflater = LayoutInflater.from(context);
@@ -50,6 +51,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
                 // Open full-screen photo activity
                 Intent intent = new Intent(context, FullScreenPhotoActivity.class);
                 intent.putExtra("photoUri", photo.getImageUri().toString());
+                currentPhoto = photo;
                 context.startActivity(intent);
             }
         });

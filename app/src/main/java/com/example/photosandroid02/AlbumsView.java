@@ -171,9 +171,9 @@ public class AlbumsView extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String newAlbumName = input.getText().toString();
-                Album album = new Album(newAlbumName);
+                albums.get(longPressedItemPosition).setAlbumName(newAlbumName);
                 if (!newAlbumName.isEmpty()) {
-                    albums.set(longPressedItemPosition, album);
+                    albums.set(longPressedItemPosition, albums.get(longPressedItemPosition));
                     adapter.notifyDataSetChanged();
                     Toast.makeText(AlbumsView.this, "Album renamed", Toast.LENGTH_SHORT).show();
                 } else {

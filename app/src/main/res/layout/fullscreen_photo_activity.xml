@@ -1,12 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/back_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <ImageView
         android:id="@+id/fullScreenImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/back_toolbar"
+        android:layout_above="@id/tagTextView"
         android:scaleType="fitCenter" />
+
+    <Button
+        android:id="@+id/addTagButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:layout_centerHorizontal="true"
+        android:text="Add Tag" />
+
+    <Button
+        android:id="@+id/deleteTagButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/addTagButton"
+        android:layout_toRightOf="@id/addTagButton"
+        android:layout_marginStart="16dp"
+        android:text="Delete Tag" />
+
+    <TextView
+        android:id="@+id/tagTextView"
+        android:layout_width="221dp"
+        android:layout_height="73dp"
+        android:layout_above="@id/addTagButton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="66dp"
+        android:textAlignment="center"
+        android:text="TextView" />
 
 </RelativeLayout>
