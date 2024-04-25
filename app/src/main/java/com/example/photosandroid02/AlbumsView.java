@@ -31,8 +31,8 @@ import java.util.ArrayList;
 
 public class AlbumsView extends AppCompatActivity {
     private static final int REQUEST_CODE_PERMISSION = 101;
-    ArrayList<Album> albums = new ArrayList<>();
-    ArrayAdapter<Album> adapter;
+    public static ArrayList<Album> albums = new ArrayList<>();
+    public static ArrayAdapter<Album> adapter;
     ListView listView;
     ImageButton searchButton;
 
@@ -171,9 +171,9 @@ public class AlbumsView extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String newAlbumName = input.getText().toString();
-                Album album = new Album(newAlbumName);
+                albums.get(longPressedItemPosition).setAlbumName(newAlbumName);
                 if (!newAlbumName.isEmpty()) {
-                    albums.set(longPressedItemPosition, album);
+                    albums.set(longPressedItemPosition, albums.get(longPressedItemPosition));
                     adapter.notifyDataSetChanged();
                     Toast.makeText(AlbumsView.this, "Album renamed", Toast.LENGTH_SHORT).show();
                 } else {

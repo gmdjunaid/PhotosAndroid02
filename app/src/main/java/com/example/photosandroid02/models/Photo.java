@@ -60,6 +60,15 @@ public class Photo implements Serializable {
         }
     }
 
+    public String getTagType(String value) {
+        for (Map.Entry<String, Set<String>> entry : tags.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
     // Check if a photo has a specific tag
     public boolean hasTag(String type, String value) {
         return tags.containsKey(type) && tags.get(type).contains(value);
