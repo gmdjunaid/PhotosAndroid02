@@ -1,25 +1,44 @@
 package com.example.photosandroid02;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.ContextMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.photosandroid02.models.Album;
 import com.example.photosandroid02.models.Photo;
 import java.io.IOException;
 import java.util.List;
 
+import com.example.photosandroid02.PhotoView;
+
+import static com.example.photosandroid02.AlbumsView.albums;
+import static com.example.photosandroid02.AlbumsView.currentAlbum;
+
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
+
+    public interface OnPhotoLongClickListener {
+        void onPhotoLongClicked(int position);
+    }
 
     private final List<Photo> photos;
     private LayoutInflater inflater;
     private final Context context;
+    private static OnPhotoLongClickListener listener;
+
+    private int longPressedItemPosition;
 
     public static Photo currentPhoto;
     public PhotoAdapter(Context context, List<Photo> photos) {
@@ -56,6 +75,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
             }
         });
 
+        holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (listener != null) {
+                    listener.onPhotoLongClicked(holder.getAdapterPosition()); // Notify listener
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -69,6 +98,35 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.photoImageView);
+
+            imageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && listener != null) {
+                        listener.onPhotoLongClicked(position); // Notify listener
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+
+    public void setOnPhotoLongClickListener(OnPhotoLongClickListener listener) {
+        PhotoAdapter.listener = listener;
+    }
+
+    public void movePhotoToAlbum(int album) {
+        if (currentAlbum != null && currentAlbum.getPhotos() != null && !currentAlbum.getPhotos().isEmpty()) {
+            if (longPressedItemPosition >= 0 && longPressedItemPosition < currentAlbum.getPhotos().size()) {
+                Photo p = currentAlbum.getPhotos().get(longPressedItemPosition);
+                if (albums != null && albums.size() > album && albums.get(album) != null) {
+                    albums.get(album).getPhotos().add(p);
+                    currentAlbum.getPhotos().remove(p); // Remove the photo from the current album
+                    notifyDataSetChanged();
+                }
+            }
         }
     }
 }

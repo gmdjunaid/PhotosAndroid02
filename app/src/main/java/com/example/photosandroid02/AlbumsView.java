@@ -31,8 +31,8 @@ import java.util.ArrayList;
 
 public class AlbumsView extends AppCompatActivity {
     private static final int REQUEST_CODE_PERMISSION = 101;
-    ArrayList<Album> albums = new ArrayList<>();
-    ArrayAdapter<Album> adapter;
+    public static ArrayList<Album> albums = new ArrayList<>();
+    public static ArrayAdapter<Album> adapter;
     ListView listView;
     ImageButton searchButton;
 
