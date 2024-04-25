@@ -35,7 +35,6 @@ public class PhotoView extends AppCompatActivity implements PhotoAdapter.OnPhoto
     private FloatingActionButton addPhotoBtn;
     private int longPressedItemPosition;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +67,20 @@ public class PhotoView extends AppCompatActivity implements PhotoAdapter.OnPhoto
                 addPhoto();
             }
         });
+
+        FloatingActionButton deletePhotoBtn = findViewById(R.id.deletePhotoBtn);
+        deletePhotoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isDeleteMode = !isDeleteMode;  // Toggle delete mode
+                if (isDeleteMode) {
+                    Toast.makeText(PhotoView.this, "Select a photo to delete", Toast.LENGTH_SHORT).show();
+                } else {
+                    selectedPhoto = null;  // Clear selection when exiting delete mode
+                    photosAdapter.notifyDataSetChanged();  // Refresh to clear any selections visually
+                }
+            }
+        });
     }
 
     @Override
@@ -84,6 +97,47 @@ public class PhotoView extends AppCompatActivity implements PhotoAdapter.OnPhoto
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(intent, REQUEST_GET_PHOTO);
     }
+
+    public void deletePhoto(Photo photo) {
+        if (photo != null) {
+            int index = photosList.indexOf(photo);
+            if (index != -1) {
+                photosList.remove(index);
+                photosAdapter.notifyItemRemoved(index);
+                selectedPhoto = null;  // Clear the selection
+                Toast.makeText(this, "Photo deleted", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "No photo selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void captionPhoto(View view) {
+        if (selectedPhoto != null) {
+            final EditText input = new EditText(this);
+            input.setText(selectedPhoto.getCaption());
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Caption Photo")
+                    .setView(input)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            selectedPhoto.setCaption(input.getText().toString());
+                            photosAdapter.notifyDataSetChanged(); // Update the view
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // Do nothing.
+                        }
+                    })
+                    .show();
+        } else {
+            Toast.makeText(this, "No photo selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Implement other methods based on your requirements and logic
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

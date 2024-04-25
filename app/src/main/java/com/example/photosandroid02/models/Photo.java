@@ -17,6 +17,7 @@ public class Photo implements Serializable {
     private final Uri imageUri; // URI to locate the image in storage
     private String caption; // Optional caption for the image
     private final Map<String, Set<String>> tags; // Tags associated with the photo
+    private boolean isSelected = false;
 
     public Photo(Uri imageUri) {
         this.imageUri = imageUri;
@@ -81,6 +82,10 @@ public class Photo implements Serializable {
             builder.append(String.join(", ", entry.getValue())).append("\n");
         }
         return builder.toString().trim();
+    }
+
+    public void setSelected(boolean b) {
+        this.isSelected = b;
     }
 }
 
