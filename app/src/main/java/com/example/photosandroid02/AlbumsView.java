@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -25,6 +26,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.photosandroid02.models.Album;
+import com.example.photosandroid02.models.Photo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -97,7 +99,8 @@ public class AlbumsView extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AlbumsView.this, "Clicked Search", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(AlbumsView.this, TagSearch.class);
+                startActivity(intent);
             }
         });
 
@@ -256,5 +259,53 @@ public class AlbumsView extends AppCompatActivity {
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + getPackageName()));
         startActivity(intent);
+    }
+
+    private void showSearchDialog() {
+
+    }
+
+    private void performSearch(String[] input) {
+        Album searchResults = new Album("Search Results");
+        String firstType = null; String firstValue = null; String conj = null; String secondType = null; String secondValue = null;
+
+        if (input.length == 5) {
+            firstType = input[0];
+            firstValue = input[1];
+            conj = input[2];
+            secondType = input[3];
+            secondValue = input[4];
+        } else if (input.length == 2) {
+            firstType = input[0];
+            firstValue = input[1];
+        } else {
+            Toast.makeText(AlbumsView.this, "Invalid input", Toast.LENGTH_SHORT).show();
+        }
+
+        for (Album a : albums) {
+            for (Photo p : a.getPhotos()) {
+                if (conj != null && conj.equalsIgnoreCase("and")) {
+                    if (p.hasTag(firstType, firstValue) && p.hasTag(secondType, secondValue)) {
+                        searchResults.getPhotos().add(p);
+                    }
+                } else if (conj != null && conj.equalsIgnoreCase("or")) {
+                    if (p.hasTag(firstType, firstValue) || p.hasTag(secondType, secondValue)) {
+                        searchResults.getPhotos().add(p);
+                    }
+                } else if (conj == null || secondType == null || secondValue == null) {
+                    if (p.hasTag(firstType, firstValue)) {
+                        searchResults.getPhotos().add(p);
+                    }
+                }
+            }
+        }
+
+        if (!searchResults.getPhotos().isEmpty()) {
+            albums.add(searchResults);
+            adapter.notifyDataSetChanged();
+        }
+        else {
+            Toast.makeText(AlbumsView.this, "No results found for this search.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

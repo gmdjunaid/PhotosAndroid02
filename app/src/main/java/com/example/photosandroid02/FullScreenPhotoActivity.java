@@ -169,7 +169,15 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
 
                 // Perform necessary actions with tag type and value
                 // For example, you can display a Toast with the selected tag type and value
-                currentPhoto.addTag(tagType, tagValue);
+                if (tagType.equalsIgnoreCase("location")) {
+                    if (currentPhoto.getTags().containsKey("Location")) {
+                        Toast.makeText(FullScreenPhotoActivity.this, "A location tag already exists.", Toast.LENGTH_LONG).show();
+                    } else {
+                        currentPhoto.addTag(tagType, tagValue);
+                    }
+                } else {
+                    currentPhoto.addTag(tagType, tagValue);
+                }
                 tagTextView.setText(currentPhoto.getFormattedTags());
             }
         });
@@ -205,7 +213,7 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
                 // Remove selected tag from map
                 String deletedTagValue = tagArray[which];
                 String deletedTagType = currentPhoto.getTagType(tagArray[which]);
-                currentPhoto.getTags().remove(deletedTagValue);
+                currentPhoto.removeTag(deletedTagValue);
                 tagTextView.setText(currentPhoto.getFormattedTags());
             }
         });
