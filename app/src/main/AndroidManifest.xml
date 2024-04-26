@@ -30,7 +30,10 @@
             android:name=".FullScreenPhotoActivity"
             android:label="Full Screen Photo Activity">
         </activity>
-
+        <activity
+            android:name=".TagSearch"
+            android:label="Tag Search">
+        </activity>
 
     </application>
 

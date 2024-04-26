@@ -50,11 +50,11 @@ public class Photo implements Serializable {
     }
 
     // Remove a tag from the photo
-    public void removeTag(String type, String value) {
-        if (tags.containsKey(type)) {
-            tags.get(type).remove(value);
-            if (tags.get(type).isEmpty()) {
-                tags.remove(type);
+    public void removeTag(String value) {
+        for (Set<String> tagValues : tags.values()) {
+            if (tagValues.contains(value)) {
+                tagValues.remove(value);
+                return; // Exit the loop once the tag value is removed
             }
         }
     }
