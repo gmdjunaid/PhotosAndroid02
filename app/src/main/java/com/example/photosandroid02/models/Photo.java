@@ -1,6 +1,10 @@
 package com.example.photosandroid02.models;
 
 import android.net.Uri;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,8 +20,7 @@ public class Photo implements Serializable {
 
     private final Uri imageUri; // URI to locate the image in storage
     private String caption; // Optional caption for the image
-    private final Map<String, Set<String>> tags; // Tags associated with the photo
-    private boolean isSelected = false;
+    private Map<String, Set<String>> tags; // Tags associated with the photo
 
     public Photo(Uri imageUri) {
         this.imageUri = imageUri;
@@ -71,7 +74,8 @@ public class Photo implements Serializable {
 
     // Check if a photo has a specific tag
     public boolean hasTag(String type, String value) {
-        return tags.containsKey(type) && tags.get(type).contains(value);
+        String toLower = value.toLowerCase();
+        return tags.containsKey(type) && tags.get(type).contains(toLower);
     }
 
     // Get a formatted string of all tags for display
@@ -84,8 +88,34 @@ public class Photo implements Serializable {
         return builder.toString().trim();
     }
 
-    public void setSelected(boolean b) {
-        this.isSelected = b;
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+
+        out.writeInt(tags.size());
+        for (Map.Entry<String, Set<String>> entry : tags.entrySet()) {
+            out.writeObject(entry.getKey());
+            out.writeInt(entry.getValue().size());
+            for (String value : entry.getValue()) {
+                out.writeObject(value);
+            }
+        }
+    }
+
+    // Custom deserialization method
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+
+        int numTags = in.readInt();
+        tags = new HashMap<>();
+        for (int i = 0; i < numTags; i++) {
+            String type = (String) in.readObject();
+            int numValues = in.readInt();
+            Set<String> values = new HashSet<>();
+            for (int j = 0; j < numValues; j++) {
+                values.add((String) in.readObject());
+            }
+            tags.put(type, values);
+        }
     }
 }
 
