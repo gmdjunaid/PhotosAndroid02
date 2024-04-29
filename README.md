@@ -18,5 +18,5 @@ A photos app created for Android phones in Android Studio for CS213 @ Rutgers Un
 - Add or delete a tag (Person or Location type)
 
 ## Authors
-- @rafzal2020
-- @gmdjunaid
+- [Rayaan Afzal](https://github.com/rafzal2020)
+- [Junaid Ghani](https://github.com/gmdjunaid)
