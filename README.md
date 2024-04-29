@@ -3,7 +3,6 @@
 
 A photos app created for Android phones in Android Studio for CS213 @ Rutgers University
 
-Created by Rayaan Afzal and Junaid Ghani
 
 
 
@@ -19,5 +18,5 @@ Created by Rayaan Afzal and Junaid Ghani
 - Add or delete a tag (Person or Location type)
 
 ## Authors
-- @rafzal2020
+- @rafza
 - @gmdjunaid
