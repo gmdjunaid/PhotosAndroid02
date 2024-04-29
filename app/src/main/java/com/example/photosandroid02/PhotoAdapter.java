@@ -58,32 +58,20 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         return new ViewHolder(view);
     }
 
-    private int selectedPos = RecyclerView.NO_POSITION;
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Photo photo = photos.get(position);
         holder.imageView.setImageURI(photo.getImageUri());
-        holder.itemView.setSelected(selectedPos == position);
 
         // Handle click event
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((PhotoView) context).isDeleteMode) {
-                    // In delete mode, select the photo and show deletion option
-                    selectedPos = position;
-                    notifyDataSetChanged();  // Highlight the selected item
-                    ((PhotoView) context).selectedPhoto = photo;  // Update the selected photo
-                    if(context instanceof PhotoView) {
-                        ((PhotoView) context).deletePhoto(photo);
-                    }
-                } else {
-                    // Normal mode, open photo view or perform other actions
-                    // Open full-screen photo activity
-                    Intent intent = new Intent(context, FullScreenPhotoActivity.class);
-                    intent.putExtra("photoUri", photo.getImageUri().toString());
-                    context.startActivity(intent);
-                }
+                // Open full-screen photo activity
+                Intent intent = new Intent(context, FullScreenPhotoActivity.class);
+                intent.putExtra("photoUri", photo.getImageUri().toString());
+                currentPhoto = photo;
+                context.startActivity(intent);
             }
         });
 

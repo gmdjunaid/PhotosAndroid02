@@ -22,10 +22,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import static com.example.photosandroid02.AlbumsView.currentAlbum;
 import static com.example.photosandroid02.PhotoAdapter.currentPhoto;
+import static com.example.photosandroid02.TagSearch.suggestionsAdapter;
+import static com.example.photosandroid02.TagSearch.locationSuggestions;
+import static com.example.photosandroid02.TagSearch.personSuggestions;
 
 import com.example.photosandroid02.models.Photo;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -174,9 +178,11 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
                         Toast.makeText(FullScreenPhotoActivity.this, "A location tag already exists.", Toast.LENGTH_LONG).show();
                     } else {
                         currentPhoto.addTag(tagType, tagValue);
+                        locationSuggestions.add(tagValue);
                     }
                 } else {
                     currentPhoto.addTag(tagType, tagValue);
+                    personSuggestions.add(tagValue);
                 }
                 tagTextView.setText(currentPhoto.getFormattedTags());
             }
@@ -214,6 +220,11 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
                 String deletedTagValue = tagArray[which];
                 String deletedTagType = currentPhoto.getTagType(tagArray[which]);
                 currentPhoto.removeTag(deletedTagValue);
+                if (deletedTagType.equalsIgnoreCase("location")) {
+                    locationSuggestions.remove(deletedTagValue);
+                } else {
+                    personSuggestions.remove(deletedTagValue);
+                }
                 tagTextView.setText(currentPhoto.getFormattedTags());
             }
         });

@@ -53,6 +53,9 @@ public class AlbumsView extends AppCompatActivity {
         adapter = new ArrayAdapter<Album>(this, R.layout.activity_albumview, R.id.album, albums);
         listView.setAdapter(adapter);
 
+        albums = (ArrayList<Album>) SharedPreferencesManager.loadAlbums(this);
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -65,6 +68,9 @@ public class AlbumsView extends AppCompatActivity {
             // For SDK versions below 23, permission is granted at installation time
             // You can proceed with your logic here
         }
+
+        adapter = new ArrayAdapter<>(this, R.layout.activity_albumview, R.id.album, albums);
+        listView.setAdapter(adapter);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +110,12 @@ public class AlbumsView extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferencesManager.saveAlbums(this, albums);
     }
 
     // Handles the context menu when long pressing an album.
