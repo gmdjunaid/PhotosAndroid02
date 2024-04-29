@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.photosandroid02.models.Album;
 import com.example.photosandroid02.models.Photo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -40,6 +41,7 @@ public class PhotoView extends AppCompatActivity implements PhotoAdapter.OnPhoto
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photos_view);
+
 
         if (currentAlbum != null) {
             photosList = currentAlbum.getPhotos();
