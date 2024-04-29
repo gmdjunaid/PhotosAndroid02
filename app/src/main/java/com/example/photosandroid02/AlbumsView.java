@@ -140,7 +140,11 @@ public class AlbumsView extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String albumName = input.getText().toString();
                 if (!albumName.isEmpty()) {
-                    addAlbum(albumName);
+                    for (Album a : albums) {
+                        if (albumName.equalsIgnoreCase(a.getAlbumName())) {
+                            Toast.makeText(AlbumsView.this, "This album name already exists", Toast.LENGTH_SHORT).show();
+                        } else addAlbum(albumName);
+                    }
                 } else {
                     Toast.makeText(AlbumsView.this, "Album name cannot be empty", Toast.LENGTH_SHORT).show();
                 }
