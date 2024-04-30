@@ -46,6 +46,7 @@ public class PhotoView extends AppCompatActivity implements PhotoAdapter.OnPhoto
         if (currentAlbum != null) {
             photosList = currentAlbum.getPhotos();
         }
+
         photosRecyclerView = findViewById(R.id.photosRecyclerView);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

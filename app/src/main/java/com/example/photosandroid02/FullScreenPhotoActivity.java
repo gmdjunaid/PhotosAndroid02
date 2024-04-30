@@ -178,11 +178,13 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
                         Toast.makeText(FullScreenPhotoActivity.this, "A location tag already exists.", Toast.LENGTH_LONG).show();
                     } else {
                         currentPhoto.addTag(tagType, tagValue);
-                        locationSuggestions.add(tagValue);
+                        if (!locationSuggestions.contains(tagValue))
+                            locationSuggestions.add(tagValue);
                     }
                 } else {
                     currentPhoto.addTag(tagType, tagValue);
-                    personSuggestions.add(tagValue);
+                    if (!personSuggestions.contains(tagValue))
+                        personSuggestions.add(tagValue);
                 }
                 tagTextView.setText(currentPhoto.getFormattedTags());
             }
@@ -204,7 +206,6 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
         builder.setTitle("Select Tag to Delete");
 
         // Convert map keys (tag names) to array for ArrayAdapter
-        final Set<String> tagNames = currentPhoto.getTags().keySet();
         ArrayList<String> tagValues = new ArrayList<>();
         for (Map.Entry<String, Set<String>> entry : currentPhoto.getTags().entrySet()) {
             Set<String> values = entry.getValue();
@@ -218,13 +219,12 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 // Remove selected tag from map
                 String deletedTagValue = tagArray[which];
-                String deletedTagType = currentPhoto.getTagType(tagArray[which]);
-                currentPhoto.removeTag(deletedTagValue);
+                String deletedTagType = currentPhoto.getTagType(deletedTagValue);
                 if (deletedTagType.equalsIgnoreCase("location")) {
-                    locationSuggestions.remove(deletedTagValue);
-                } else {
-                    personSuggestions.remove(deletedTagValue);
+                    currentPhoto.getTags().remove("Location");
                 }
+
+                currentPhoto.removeTag(deletedTagValue);
                 tagTextView.setText(currentPhoto.getFormattedTags());
             }
         });

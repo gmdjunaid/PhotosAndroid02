@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -65,7 +66,7 @@ public class Photo implements Serializable {
 
     public String getTagType(String value) {
         for (Map.Entry<String, Set<String>> entry : tags.entrySet()) {
-            if (entry.getValue().equals(value)) {
+            if (entry.getValue().contains(value.toLowerCase())) {
                 return entry.getKey();
             }
         }
@@ -74,8 +75,17 @@ public class Photo implements Serializable {
 
     // Check if a photo has a specific tag
     public boolean hasTag(String type, String value) {
-        String toLower = value.toLowerCase();
-        return tags.containsKey(type) && tags.get(type).contains(toLower);
+        /*String toLower = value.toLowerCase();
+        return tags.containsKey(type) && Objects.requireNonNull(tags.get(type)).contains(toLower);*/
+        Set<String> tagValues = tags.get(type);
+        if (tagValues != null) {
+            for (String val : tagValues) {
+                if (val.equalsIgnoreCase(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // Get a formatted string of all tags for display
