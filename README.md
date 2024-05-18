@@ -1,7 +1,7 @@
 
 # Photos App for Android
 
-A photos app created for Android phones in Android Studio for CS213 @ Rutgers University
+A photos app created for Android phones in Android Studio 
 
 
 
